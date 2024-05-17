@@ -37,10 +37,6 @@ async def on_ready():
     await tree.sync()
     print(f'{bot.user} is now up and running.')
 
-# @discord.ui.button(label='Abort', style=discord.ButtonStyle.red)
-# async def abort_btn(interaction: discord.Interaction, btn: discord.ui.Button):
-#     await interaction.response.send_message('Acknowledge', ephemeral=True)
-
 @tree.command(name='ping', description='Check the bot\'s status')
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.')
