@@ -4,6 +4,7 @@ from discord.ext import tasks
 
 from logic import (
     add_request,
+    check_request,
     remove_request,
     pending_requests_count,
     get_requests_copy,
@@ -52,7 +53,7 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
     if requester.voice is None:
         await interaction.response.send_message(
             content='You are not in any voice channel.',
-            delete_after=20,
+            delete_after=10,
             ephemeral=True)
         return
 
@@ -81,9 +82,11 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
 # async def disconnect_me(interaction: discord.Interaction):
 #     pass #TODO
 
-# @tree.command(name='check', description='Check if you have any pending disconnect request')
-# async def check(interaction: discord.Interaction):
-#     pass #TODO
+@tree.command(name='check', description='Check if you have any pending disconnect request')
+async def check(interaction: discord.Interaction):
+    time_left = check_request(interaction.user)
+    msg = f'{time_left}s until you are disconnected.' if time_left else 'You have no pending request.'
+    await interaction.response.send_message(content=msg, ephemeral=True)
 
 @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
 async def abort_request(interaction: discord.Interaction):

@@ -8,9 +8,9 @@ def add_request(user: discord.Member, timer: int):
 def get_requests_copy():
     return requests.copy()
 
-# def check_request(user: discord.Member) -> int | None:
-#     if user in requests:
-#         return requests[user]
+def check_request(user: discord.Member) -> int | None:
+    if user in requests:
+        return requests[user]
 
 def remove_request(user: discord.Member) -> bool:
     if user in requests:
