@@ -69,8 +69,7 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
 async def abort(interaction: discord.Interaction):
     requester = interaction.user
 
-    if requester in requests:
-        del requests[requester]
+    if await abort(requester):
         await interaction.response.send_message(f'{requester.display_name} will no longer be disconnected.')
     else:
         await interaction.response.send_message('You do not have any disconnect request.', ephemeral=True)
@@ -91,9 +90,19 @@ async def logic_loop():
     if len(requests) == 0:
         logic_loop.stop()
 
-async def disconnect_user(user: discord.Member):
+async def disconnect_user(user: discord.Member) -> bool:
     if user.voice:
         await user.move_to(None)
+        return True
+    else:
+        return False
+
+async def abort(user: discord.Member) -> bool:
+    if user in requests:
+        del requests[user]
+        return True
+    else:
+        return False
 
 # Start bot
 if TOKEN:
