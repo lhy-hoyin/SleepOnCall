@@ -71,6 +71,10 @@ async def abort(interaction: discord.Interaction):
     else:
         await interaction.response.send_message('You do not have any disconnect request.', ephemeral=True)
 
+# @tree.command(name='sponsor', description='Like this bot? Sponsor me :>')
+# async def sponsor(interaction: discord.Interaction):
+#     pass #TODO
+
 @tasks.loop(seconds=1)
 async def logic_loop():
     for user, timer in requests.copy().items():
