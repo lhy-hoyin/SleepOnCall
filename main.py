@@ -43,7 +43,7 @@ async def on_ready():
 
 @tree.command(name='ping', description='Check the bot\'s status')
 async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.', ephemeral=True)
+    await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.')
 
 @tree.command(name='dc', description='Quick disconnect')
 @app_commands.describe(timer='seconds until you are disconnected')
@@ -70,6 +70,7 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
     add_request(requester, timer)
     await interaction.response.send_message(
         content=f'You will be disconnected in {timer} second(s).',
+        delete_after=timer,
         ephemeral=True)
     
     # TODO: add a abort button
