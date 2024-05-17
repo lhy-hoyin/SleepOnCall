@@ -50,18 +50,26 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
     requester = interaction.user
 
     if requester.voice is None:
-        await interaction.response.send_message('You are not in any voice channel.', ephemeral=True)
+        await interaction.response.send_message(
+            content='You are not in any voice channel.',
+            delete_after=20,
+            ephemeral=True)
         return
 
     if timer <= 0:
-        await interaction.response.send_message('Disconnecting ...', ephemeral=True)
+        await interaction.response.send_message(
+            content='Disconnecting ...',
+            delete_after=1,
+            ephemeral=True,
+            silent=True)
         await disconnect_user(requester)
-        # await interaction.response.edit_message('Disconnected.', ephemeral=True)
         return    
 
     # Add to requests
     add_request(requester, timer)
-    await interaction.response.send_message(f'You will be disconnected in {timer} second(s).', ephemeral=True)
+    await interaction.response.send_message(
+        content=f'You will be disconnected in {timer} second(s).',
+        ephemeral=True)
     
     # TODO: add a abort button
         
