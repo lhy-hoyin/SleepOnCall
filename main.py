@@ -1,9 +1,15 @@
 import discord
 from discord import app_commands
 from discord.ext import tasks
-from config import TOKEN
 
-requests = {} # {user: timer}
+from logic import (
+    add_request,
+    remove_request,
+    pending_requests_count,
+    get_requests_copy,
+    disconnect_user,
+)
+from config import TOKEN
 
 # Initialise bot
 intents = discord.Intents.default()
@@ -30,6 +36,10 @@ async def on_ready():
     await tree.sync()
     print(f'{bot.user} is now up and running.')
 
+# @discord.ui.button(label='Abort', style=discord.ButtonStyle.red)
+# async def abort_btn(interaction: discord.Interaction, btn: discord.ui.Button):
+#     await interaction.response.send_message('Acknowledge', ephemeral=True)
+
 @tree.command(name='ping', description='Check the bot\'s status')
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.', ephemeral=True)
@@ -46,11 +56,13 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
     if timer <= 0:
         await interaction.response.send_message('Disconnecting ...', ephemeral=True)
         await disconnect_user(requester)
+        # await interaction.response.edit_message('Disconnected.', ephemeral=True)
         return    
 
     # Add to requests
-    requests[requester] = timer
-    await interaction.response.send_message(f'You will be disconnected in {timer} seconds.', ephemeral=True)
+    add_request(requester, timer)
+    await interaction.response.send_message(f'You will be disconnected in {timer} second(s).', ephemeral=True)
+    
     # TODO: add a abort button
         
     # Start loop if not started
@@ -66,10 +78,10 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
 #     pass #TODO
 
 @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
-async def abort(interaction: discord.Interaction):
+async def remove_request(interaction: discord.Interaction):
     requester = interaction.user
 
-    if await abort(requester):
+    if remove_request(requester):
         await interaction.response.send_message(f'{requester.display_name} will no longer be disconnected.')
     else:
         await interaction.response.send_message('You do not have any disconnect request.', ephemeral=True)
@@ -80,29 +92,15 @@ async def abort(interaction: discord.Interaction):
 
 @tasks.loop(seconds=1)
 async def logic_loop():
-    for user, timer in requests.copy().items():
+    for user, timer in get_requests_copy().items():
         if timer > 1:
-            requests[user] = timer - 1
+            add_request(user, timer - 1)
         else:
             await disconnect_user(user)
-            del requests[user]
+            remove_request(user)
     
-    if len(requests) == 0:
+    if pending_requests_count() == 0:
         logic_loop.stop()
-
-async def disconnect_user(user: discord.Member) -> bool:
-    if user.voice:
-        await user.move_to(None)
-        return True
-    else:
-        return False
-
-async def abort(user: discord.Member) -> bool:
-    if user in requests:
-        del requests[user]
-        return True
-    else:
-        return False
 
 # Start bot
 if TOKEN:
