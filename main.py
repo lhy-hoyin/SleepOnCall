@@ -78,7 +78,7 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
 #     pass #TODO
 
 @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
-async def remove_request(interaction: discord.Interaction):
+async def abort_request(interaction: discord.Interaction):
     requester = interaction.user
 
     if remove_request(requester):
