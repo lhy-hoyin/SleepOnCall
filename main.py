@@ -61,6 +61,10 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
 # async def disconnect_me(interaction: discord.Interaction):
 #     pass #TODO
 
+# @tree.command(name='check', description='Check if you have any pending disconnect request')
+# async def check(interaction: discord.Interaction):
+#     pass #TODO
+
 @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
 async def abort(interaction: discord.Interaction):
     requester = interaction.user
