@@ -68,16 +68,14 @@ async def dc(interaction: discord.Interaction, timer: int = 0):
 
     # Add to requests
     add_request(requester, timer)
-    await interaction.response.send_message(
-        content=f'You will be disconnected in {timer} second(s).',
-        delete_after=timer,
-        ephemeral=True)
-    
-    # TODO: add a abort button
-        
-    # Start loop if not started
     if not logic_loop.is_running():
         logic_loop.start()
+
+    # Acknowledge success of request
+    await interaction.response.send_message(
+        content=f'You will be disconnected in {timer} second(s).\nTo cancel, use `/abort`.',
+        delete_after=timer,
+        ephemeral=True)
 
 # @tree.command(name='disconnect_me', description='Set a timer, where you will be disconnect after that.')
 # async def disconnect_me(interaction: discord.Interaction):
