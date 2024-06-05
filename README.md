@@ -9,8 +9,8 @@ You can happily fall asleep on call without worrying that being on call througho
    ```
    BOT_TOKEN=ADD_YOUR_OWN_DISCORD_BOT_TOKEN_HERE
    ```
-3. Install dependencies stated in `requirement.txt`
+3. Install dependencies stated in `requirements.txt`
    ```
-   pip install -r requirement.txt
+   pip install -r requirements.txt
    ```
 4. Run `main.py`
