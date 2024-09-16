@@ -10,10 +10,13 @@ Pre-requisite: created a Discord bot on [Discord Developer Portal](https://disco
 1. Create a `.env` file
 2. In the `.env` file, add the Discord bot token
    ```
-   BOT_TOKEN=ADD_YOUR_OWN_DISCORD_BOT_TOKEN_HERE
+   BOT_TOKEN="ADD_YOUR_OWN_DISCORD_BOT_TOKEN_HERE"
    ```
 3. Install dependencies stated in `requirements.txt`
    ```
    pip install -r requirements.txt
    ```
 4. Run `main.py`
+   ```
+   python main.py
+   ```
