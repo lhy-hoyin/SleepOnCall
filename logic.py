@@ -1,18 +1,29 @@
 import discord
 from discord.ext import tasks
+from typing import TypedDict
 
-requests = {} # {user: timer}
+RequestDict = TypedDict('Request', {'user': discord.Member, 'timer': int})
+requests = RequestDict()
 
 @tasks.loop(seconds=1)
 async def logic_loop():
     for user, timer in requests.copy().items():
-        if timer > 1:
-            add_request(user, timer - 1)
-        else:
+        # User has left vc on their own
+        if not user.voice:
+            remove_request(user)
+            continue
+        
+        # Timer has ended
+        if timer <= 0:
             await disconnect_user(user)
             remove_request(user)
+            continue
+        
+        # Update with a reduced timer
+        add_request(user, timer - 1)
     
-    if pending_requests_count() == 0:
+    # Stop logic loop if no more pending requests
+    if len(requests) == 0:
         logic_loop.stop()
 
 def add_request(user: discord.Member, timer: int):
@@ -28,9 +39,6 @@ def remove_request(user: discord.Member) -> bool:
         return True
     else:
         return False
-    
-def pending_requests_count() -> int:
-    return len(requests)
 
 async def disconnect_user(user: discord.Member) -> bool:
     if user.voice:

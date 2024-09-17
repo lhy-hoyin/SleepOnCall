@@ -18,7 +18,7 @@ Supported Commands:
  - abort_request
 """
 
-def tree(bot) -> app_commands.CommandTree:
+def tree(bot: discord.Client) -> app_commands.CommandTree:
     tree = app_commands.CommandTree(bot)
 
     @tree.command(name='ping', description='Check the bot\'s status')
