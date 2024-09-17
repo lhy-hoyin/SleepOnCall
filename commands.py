@@ -1,12 +1,11 @@
 import discord
 from discord import app_commands
 
+from TimerSelector import TimerSelector
 from logic import (
-    add_request,
     check_request,
     remove_request,
-    disconnect_user,
-    logic_loop
+    handle_disconnect_request,
 )
 
 """
@@ -55,66 +54,3 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     #     pass #TODO
 
     return tree
-
-class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
-    time = discord.ui.TextInput(
-        label='Time (max 8 hours)',
-        placeholder = 'h:mm:ss',
-        style=discord.TextStyle.short,
-        required=True,
-        min_length=5,
-        max_length=7
-    )
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        input = self.time.value
-
-        if input.count(':') != 2:
-            return False        
-
-        hrs, min, sec = [int(x) for x in input.split(':')]
-
-        if hrs > 8 or min > 59 or sec > 59 \
-            or hrs < 0 or min < 0 or sec < 0:
-            return False
-
-        self.time_in_sec = (hrs * 3600) + (min * 60) + sec
-
-        if self.time_in_sec > 28800: # 28800s = 8hrs
-            return False
-
-        return True
-
-    async def on_submit(self, interaction: discord.Interaction):
-        await handle_disconnect_request(interaction, self.time_in_sec)
-
-async def handle_disconnect_request(interaction: discord.Interaction, timer):
-    requester = interaction.user
-    
-    if requester.voice is None:
-        await interaction.response.send_message(
-            content='You are not in any voice channel.',
-            delete_after=10,
-            ephemeral=True)
-        return
-
-    if timer <= 0:
-        await interaction.response.send_message(
-            content='Disconnecting ...',
-            delete_after=1,
-            ephemeral=True,
-            silent=True)
-        await disconnect_user(requester)
-        return    
-
-    # Add to requests
-    add_request(requester, timer)
-    if not logic_loop.is_running():
-        logic_loop.start()
-
-    # Acknowledge success of request
-    # TODO: make time_left user friendly, i.e. hr, min,sec
-    await interaction.response.send_message(
-        content=f'You will be disconnected in {timer} second(s).\nTo cancel, use `/abort`.',
-        delete_after=timer,
-        ephemeral=True)

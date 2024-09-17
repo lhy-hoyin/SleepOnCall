@@ -46,3 +46,34 @@ async def disconnect_user(user: discord.Member) -> bool:
         return True
     else:
         return False
+
+async def handle_disconnect_request(interaction: discord.Interaction, timer):
+    requester = interaction.user
+    
+    if requester.voice is None:
+        await interaction.response.send_message(
+            content='You are not in any voice channel.',
+            delete_after=10,
+            ephemeral=True)
+        return
+
+    if timer <= 0:
+        await interaction.response.send_message(
+            content='Disconnecting ...',
+            delete_after=1,
+            ephemeral=True,
+            silent=True)
+        await disconnect_user(requester)
+        return    
+
+    # Add to requests
+    add_request(requester, timer)
+    if not logic_loop.is_running():
+        logic_loop.start()
+
+    # Acknowledge success of request
+    # TODO: make time_left user friendly, i.e. hr, min, sec
+    await interaction.response.send_message(
+        content=f'You will be disconnected in {timer} second(s).\nTo cancel, use `/abort`.',
+        delete_after=timer,
+        ephemeral=True)
