@@ -1,12 +1,22 @@
 import discord
+from discord.ext import tasks
 
 requests = {} # {user: timer}
 
+@tasks.loop(seconds=1)
+async def logic_loop():
+    for user, timer in requests.copy().items():
+        if timer > 1:
+            add_request(user, timer - 1)
+        else:
+            await disconnect_user(user)
+            remove_request(user)
+    
+    if pending_requests_count() == 0:
+        logic_loop.stop()
+
 def add_request(user: discord.Member, timer: int):
     requests[user] = timer
-
-def get_requests_copy():
-    return requests.copy()
 
 def check_request(user: discord.Member) -> int | None:
     if user in requests:

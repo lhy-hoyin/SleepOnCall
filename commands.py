@@ -1,15 +1,22 @@
 import discord
 from discord import app_commands
-from discord.ext import tasks
 
 from logic import (
     add_request,
     check_request,
     remove_request,
-    pending_requests_count,
-    get_requests_copy,
     disconnect_user,
+    logic_loop
 )
+
+"""
+Supported Commands:
+ - ping
+ - dc
+ - disconnect_me
+ - check
+ - abort_request
+"""
 
 def tree(bot) -> app_commands.CommandTree:
     tree = app_commands.CommandTree(bot)
@@ -30,7 +37,7 @@ def tree(bot) -> app_commands.CommandTree:
     @tree.command(name='check', description='Check if you have any pending disconnect request')
     async def check(interaction: discord.Interaction):
         time_left = check_request(interaction.user)
-        # TODO: make time_left user friendly, i.e. hr, min,sec
+        # TODO: make time_left user friendly, i.e. hr, min, sec
         msg = f'{time_left}s until you are disconnected.' if time_left else 'You have no pending request.'
         await interaction.response.send_message(content=msg, ephemeral=True)
 
@@ -111,15 +118,3 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
         content=f'You will be disconnected in {timer} second(s).\nTo cancel, use `/abort`.',
         delete_after=timer,
         ephemeral=True)
-
-@tasks.loop(seconds=1)
-async def logic_loop():
-    for user, timer in get_requests_copy().items():
-        if timer > 1:
-            add_request(user, timer - 1)
-        else:
-            await disconnect_user(user)
-            remove_request(user)
-    
-    if pending_requests_count() == 0:
-        logic_loop.stop()
