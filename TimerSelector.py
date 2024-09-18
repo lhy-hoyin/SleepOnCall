@@ -17,15 +17,19 @@ class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
         if input.count(':') != 2:
             return False        
 
-        hrs, min, sec = [int(x) for x in input.split(':')]
+        try: 
+            hrs, min, sec = [int(x) for x in input.split(':')]
 
-        if hrs > 8 or min > 59 or sec > 59 \
-            or hrs < 0 or min < 0 or sec < 0:
-            return False
+            if hrs > 8 or min > 59 or sec > 59 \
+                or hrs < 0 or min < 0 or sec < 0:
+                return False
 
-        self.time_in_sec = (hrs * 3600) + (min * 60) + sec
+            self.time_in_sec = (hrs * 3600) + (min * 60) + sec
 
-        if self.time_in_sec > 28800: # 28800s = 8hrs
+            if self.time_in_sec > 28800: # 28800s = 8hrs
+                return False
+        except ValueError:
+            print(f'Error: cannot parse "{input}" to [hrs, min, sec]')
             return False
 
         return True

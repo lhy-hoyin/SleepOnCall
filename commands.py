@@ -15,6 +15,7 @@ Supported Commands:
  - disconnect_me
  - check
  - abort_request
+ - sponsor (not implemented)
 """
 
 def tree(bot: discord.Client) -> app_commands.CommandTree:
