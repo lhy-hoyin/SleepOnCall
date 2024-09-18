@@ -1,5 +1,6 @@
 import discord
 from logic import handle_disconnect_request
+from helper import time_in_seconds
 
 class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
     time = discord.ui.TextInput(
@@ -24,7 +25,7 @@ class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
                 or hrs < 0 or min < 0 or sec < 0:
                 return False
 
-            self.time_in_sec = (hrs * 3600) + (min * 60) + sec
+            self.time_in_sec = time_in_seconds([sec, min, hrs])
 
             if self.time_in_sec > 28800: # 28800s = 8hrs
                 return False
