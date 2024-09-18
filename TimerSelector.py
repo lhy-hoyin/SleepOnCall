@@ -4,11 +4,11 @@ from logic import handle_disconnect_request
 class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
     time = discord.ui.TextInput(
         label='Time (max 8 hours)',
-        placeholder = 'h:mm:ss',
+        placeholder = 'hh:mm:ss',
         style=discord.TextStyle.short,
         required=True,
         min_length=5,
-        max_length=7
+        max_length=8
     )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
