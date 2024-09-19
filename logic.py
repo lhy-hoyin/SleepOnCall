@@ -74,6 +74,6 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
     # Acknowledge success of request
     # TODO: make time_left user friendly, i.e. hr, min, sec
     await interaction.response.send_message(
-        content=f'You will be disconnected in {timer} second(s).\nTo cancel, use `/abort`.',
+        content=f'You will be disconnected in {timer} second(s).\nTo cancel, use </abort:1240892252595818566>.',
         delete_after=timer,
         ephemeral=True)
