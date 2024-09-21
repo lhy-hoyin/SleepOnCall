@@ -1,6 +1,7 @@
 import discord
-from discord.ext import tasks
 from typing import TypedDict
+from discord.ext import tasks
+from helper import time_in_str
 
 RequestDict = TypedDict('Request', {'user': discord.Member, 'timer': int})
 requests = RequestDict()
@@ -72,8 +73,7 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
         logic_loop.start()
 
     # Acknowledge success of request
-    # TODO: make time_left user friendly, i.e. hr, min, sec
     await interaction.response.send_message(
-        content=f'You will be disconnected in {timer} second(s).\nTo cancel, use </abort:1240892252595818566>.',
+        content=f'You will be disconnected in {time_in_str(timer)}.\nTo cancel, use </abort:1240892252595818566>.',
         delete_after=timer,
         ephemeral=True)
