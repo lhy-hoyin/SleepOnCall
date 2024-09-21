@@ -5,6 +5,13 @@ You can happily fall asleep on call without worrying that being on call througho
 
 ## Usage
 
+The bot is currently hosted (but possibly unreliably) with free services.
+Click [here](https://discord.com/oauth2/authorize?client_id=1240967966040916049) to invite into your server.
+
+The bot uses slash commands. Discord will prompt for the valid commands for the bot when you type `/`.
+
+## Setup & Installation
+
 ### Create bot
 
 1. Created a Discord bot on [Discord Developer Portal](https://discord.com/developers/applications).
