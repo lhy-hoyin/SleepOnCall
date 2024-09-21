@@ -1,7 +1,8 @@
 import discord
 from typing import TypedDict
 from discord.ext import tasks
-from helper import time_in_str
+from helper import time_in_str, time_in_seconds
+from config import MAX_TIMER
 
 RequestDict = TypedDict('Request', {'user': discord.Member, 'timer': int})
 requests = RequestDict()
@@ -65,7 +66,13 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
             ephemeral=True,
             silent=True)
         await disconnect_user(requester)
-        return    
+        return
+    
+    if timer > time_in_seconds(MAX_TIMER):
+        await interaction.response.send_message(
+            content=f'''Request time exceeds max time limit.\nMax is {time_in_str(time_in_seconds(MAX_TIMER))}.''',
+            ephemeral=True)
+        return
 
     # Add to requests
     add_request(requester, timer)
