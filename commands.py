@@ -2,6 +2,7 @@ import discord
 from discord import app_commands
 
 from TimerSelector import TimerSelector
+from config import COMMERCIAL
 from logic import (
     check_request,
     remove_request,
@@ -50,8 +51,10 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         else:
             await interaction.response.send_message('You do not have any disconnect request.', ephemeral=True)
 
-    # @tree.command(name='sponsor', description='Like this bot? Sponsor me :>')
-    # async def sponsor(interaction: discord.Interaction):
-    #     pass #TODO
+    if COMMERCIAL:
+        # @tree.command(name='sponsor', description='Like this bot? Sponsor me :>')
+        # async def sponsor(interaction: discord.Interaction):
+        #     #TODO
+        pass
 
     return tree
