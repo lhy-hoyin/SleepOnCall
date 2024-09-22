@@ -52,6 +52,7 @@ async def disconnect_user(user: discord.Member) -> bool:
 async def handle_disconnect_request(interaction: discord.Interaction, timer):
     requester = interaction.user
     
+    # User not connected to voice channel
     if requester.voice is None:
         await interaction.response.send_message(
             content='You are not in any voice channel.',
@@ -59,19 +60,18 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
             ephemeral=True)
         return
 
-    if timer <= 0:
-        await interaction.response.send_message(
-            content='Disconnecting ...',
-            delete_after=1,
-            ephemeral=True,
-            silent=True)
-        await disconnect_user(requester)
-        return
-    
+    # Requested time exceed max time limit
     if timer > time_in_seconds(MAX_TIMER):
         await interaction.response.send_message(
-            content=f'''Request time exceeds max time limit.\nMax is {time_in_str(time_in_seconds(MAX_TIMER))}.''',
+            content=f'Request time exceeds max time limit.\nMax is {time_in_str(time_in_seconds(MAX_TIMER))}.',
             ephemeral=True)
+        return
+    
+    # Requested time is "over", disconnect now
+    if timer <= 0:
+        await interaction.response.send_message(
+            content=f'Disconnecting {requester.display_name}...', silent=True)
+        await disconnect_user(requester)
         return
 
     # Add to requests
@@ -81,6 +81,4 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
 
     # Acknowledge success of request
     await interaction.response.send_message(
-        content=f'You will be disconnected in {time_in_str(timer)}.\nTo cancel, use </abort:1240892252595818566>.',
-        delete_after=timer,
-        ephemeral=True)
+        content=f'{requester.display_name} will be disconnected in {time_in_str(timer)}.\nTo cancel, use </abort:1240892252595818566>.')

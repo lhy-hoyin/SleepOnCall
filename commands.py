@@ -3,6 +3,7 @@ from discord import app_commands
 
 from TimerSelector import TimerSelector
 from config import COMMERCIAL
+from helper import time_in_str, time_in_seconds
 from logic import (
     check_request,
     remove_request,
@@ -38,8 +39,7 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     @tree.command(name='check', description='Check if you have any pending disconnect request')
     async def check(interaction: discord.Interaction):
         time_left = check_request(interaction.user)
-        # TODO: make time_left user friendly, i.e. hr, min, sec
-        msg = f'{time_left}s until you are disconnected.' if time_left else 'You have no pending request.'
+        msg = f'{time_in_str(time_left)} until you are disconnected.' if time_left else 'You have no pending request.'
         await interaction.response.send_message(content=msg, ephemeral=True)
 
     @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
