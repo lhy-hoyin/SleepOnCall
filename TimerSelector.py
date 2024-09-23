@@ -1,11 +1,11 @@
 import discord
 from logic import handle_disconnect_request
-from helper import time_in_seconds, check_time_bounds
+from helper import time_in_seconds, time_in_str, check_time_bounds
 from config import MAX_TIMER
 
 class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
     time = discord.ui.TextInput(
-        label='Time (max 8 hours)',
+        label=f'Time (max {time_in_str(time_in_seconds(MAX_TIMER))})',
         placeholder = 'hh:mm:ss',
         style=discord.TextStyle.short,
         required=True,
@@ -22,11 +22,11 @@ class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
 
         try: 
             hrs, min, sec = [int(x) for x in input.split(':')]
-            if check_time_bounds(MAX_TIMER):
+            if not check_time_bounds((sec, min, hrs)):
                 print(f'Error: Improper time format "{input}"')
                 return False
 
-            self.time_in_sec = time_in_seconds([sec, min, hrs])
+            self.time_in_sec = time_in_seconds((sec, min, hrs))
             if self.time_in_sec > time_in_seconds(MAX_TIMER):
                 print(f'Error: "{input}" exceeds max time limit')
                 return False
