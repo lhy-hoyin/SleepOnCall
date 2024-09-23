@@ -18,7 +18,7 @@ class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
 
         if input.count(':') != 2:
             print(f'Error: "{input}" is not well formatted')
-            return False        
+            return False
 
         try: 
             hrs, min, sec = [int(x) for x in input.split(':')]

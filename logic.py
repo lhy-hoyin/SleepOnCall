@@ -2,7 +2,7 @@ import discord
 from typing import TypedDict
 from discord.ext import tasks
 from helper import time_in_str, time_in_seconds
-from config import MAX_TIMER
+from config import MAX_TIMER, MENTION_USER
 
 RequestDict = TypedDict('Request', {'user': discord.Member, 'timer': int})
 requests = RequestDict()
@@ -51,9 +51,7 @@ async def disconnect_user(user: discord.Member) -> bool:
 
 async def handle_disconnect_request(interaction: discord.Interaction, timer):
     requester = interaction.user
-    
-    # User not connected to voice channel
-    if requester.voice is None:
+    name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
         await interaction.response.send_message(
             content='You are not in any voice channel.',
             delete_after=10,
@@ -69,8 +67,7 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
     
     # Requested time is "over", disconnect now
     if timer <= 0:
-        await interaction.response.send_message(
-            content=f'Disconnecting {requester.display_name}...', silent=True)
+        await interaction.response.send_message(content=f'Disconnecting {name} ...', silent=True)
         await disconnect_user(requester)
         return
 
@@ -81,4 +78,4 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer):
 
     # Acknowledge success of request
     await interaction.response.send_message(
-        content=f'{requester.display_name} will be disconnected in {time_in_str(timer)}.\nTo cancel, use </abort:1240892252595818566>.')
+        content=f'{name} will be disconnected in {time_in_str(timer)}.\nTo cancel, use </abort:1240892252595818566>.')

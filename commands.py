@@ -2,8 +2,8 @@ import discord
 from discord import app_commands
 
 from TimerSelector import TimerSelector
-from config import COMMERCIAL
-from helper import time_in_str, time_in_seconds
+from config import COMMERCIAL, MENTION_USER
+from helper import time_in_str
 from logic import (
     check_request,
     remove_request,
@@ -45,11 +45,12 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
     async def abort_request(interaction: discord.Interaction):
         requester = interaction.user
+        name = f'<@{requester.id}>' if MENTION_USER else f'{requester.display_name}'
 
         if remove_request(requester):
-            await interaction.response.send_message(f'{requester.display_name} will no longer be disconnected.')
+            await interaction.response.send_message(f'{name} will no longer be disconnected.')
         else:
-            await interaction.response.send_message('You do not have any disconnect request.', ephemeral=True)
+            await interaction.response.send_message(f'{name} do not have any disconnect request.', ephemeral=True)
 
     if COMMERCIAL:
         # @tree.command(name='sponsor', description='Like this bot? Sponsor me :>')
