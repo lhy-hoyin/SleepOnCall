@@ -2,7 +2,7 @@ import discord
 from typing import TypedDict
 from discord.ext import tasks
 from helper import time_in_str, time_in_seconds
-from config import MAX_TIMER, MENTION_USER
+from config import MAX_TIMER, MENTION_USER, ALLOW_PROXY
 
 RequestDict = TypedDict('Request', {'user': discord.Member, 'timer': int})
 requests = RequestDict()
@@ -55,7 +55,9 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer, tar
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
 
     # Check if requester has permission to disconnect others
-    if requester.id != target.id and not requester.resolved_permissions.move_members:
+    self_request = requester.id == target.id
+    has_permission = requester.resolved_permissions.move_members
+    if not self_request and not (ALLOW_PROXY and has_permission):
         await interaction.response.send_message(
             content=f'You do not have permission to disconnect {target.display_name}.',
             ephemeral=True)
@@ -97,7 +99,9 @@ async def handle_abort_request(interaction: discord.Integration, target: discord
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
 
     # Check if requester has permission to disconnect others
-    if requester.id != target.id and not requester.resolved_permissions.move_members:
+    self_request = requester.id == target.id
+    has_permission = requester.resolved_permissions.move_members
+    if not self_request and not (ALLOW_PROXY and has_permission):
         await interaction.response.send_message(
             content=f'You do not have permission to abort disconnecting {target.display_name}.',
             ephemeral=True)
