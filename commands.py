@@ -2,13 +2,9 @@ import discord
 from discord import app_commands
 
 from TimerSelector import TimerSelector
-from config import COMMERCIAL, MENTION_USER
+from config import COMMERCIAL
 from helper import time_in_str
-from logic import (
-    check_request,
-    remove_request,
-    handle_disconnect_request,
-)
+from logic import check_request, handle_disconnect_request, handle_abort_request
 
 """
 Supported Commands:
@@ -28,9 +24,10 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.')
 
     @tree.command(name='dc', description='Quick disconnect')
-    @app_commands.describe(timer='seconds until you are disconnected')
-    async def dc(interaction: discord.Interaction, timer: int = 0):
-        await handle_disconnect_request(interaction, timer)
+    @app_commands.describe(timer='seconds until disconnected')
+    @app_commands.describe(user='user to disconnect')
+    async def dc(interaction: discord.Interaction, timer: int = 0, user: discord.Member = None):
+        await handle_disconnect_request(interaction, timer, user)
 
     @tree.command(name='disconnect_me', description='Set a timer, where you will be disconnect after that.')
     async def disconnect_me(interaction: discord.Interaction):
@@ -43,14 +40,9 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         await interaction.response.send_message(content=msg, ephemeral=True)
 
     @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
-    async def abort_request(interaction: discord.Interaction):
-        requester = interaction.user
-        name = f'<@{requester.id}>' if MENTION_USER else f'{requester.display_name}'
-
-        if remove_request(requester):
-            await interaction.response.send_message(f'{name} will no longer be disconnected.')
-        else:
-            await interaction.response.send_message(f'{name} do not have any disconnect request.', ephemeral=True)
+    @app_commands.describe(user='user to disconnect')
+    async def abort_request(interaction: discord.Interaction, user: discord.Member = None):
+        await handle_abort_request(interaction, user)
 
     if COMMERCIAL:
         # @tree.command(name='sponsor', description='Like this bot? Sponsor me :>')
