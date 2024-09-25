@@ -85,14 +85,14 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer, tar
         content=f'{name} will be disconnected <t:{unix_timer}:R>.\nTo cancel, use </abort:1240892252595818566>.')
 
 async def handle_check_request(interaction: discord.Integration):
+    msg = 'You have no pending request.'
     time_left = check_request(interaction.user)
 
-    if time_left == None:
-        await interaction.response.send_message(content='You have no pending request.', delete_after=10, ephemeral=True)
-        return
-
-    dc_unix_time = int(time.time()) + time_left
-    await interaction.response.send_message(content=f'You will is disconnected <t:{dc_unix_time}:R>.',  delete_after=10, ephemeral=True)
+    if time_left:
+        dc_unix_time = int(time.time()) + time_left
+        msg = f'You will is disconnected <t:{dc_unix_time}:R>.'
+    
+    await interaction.response.send_message(content=msg,  delete_after=10, ephemeral=True)
 
 async def handle_abort_request(interaction: discord.Integration, target: discord.Member):
     requester = interaction.user
