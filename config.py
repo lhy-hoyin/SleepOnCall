@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Bot settings
-COMMERCIAL = False
+COMMERCIAL = False # not used currently
 TOKEN = os.getenv('BOT_TOKEN')
 
 """

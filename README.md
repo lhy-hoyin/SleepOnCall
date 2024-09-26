@@ -16,16 +16,40 @@ The bot uses slash commands. Discord will prompt for the valid commands for the 
 
 1. Created a Discord bot on [Discord Developer Portal](https://discord.com/developers/applications)
 2. Under **Installation**, set up the *Install Link* and give the following permissions:
-  - `Connect`
-  - `Send Message`
+    - Connect
+    - Send Message
 3. Under **Bot**, generate (or reset) a *TOKEN* and keep it safe, you will need it later 
 
+### Configure bot
+
+In `config.py`, you can set some confiugration. These configuration have default values
+and you can choose not to change them.
+
+You can configure the following:
+  -  `MAX_TIMER`
+     - Maximum time which the bot shall accept.
+       Time refers how long to wait before disconnecting user.
+     - Format: `(sec, min, hrs)`
+     - Default: `(0, 0, 2)` = 2 hours, 0 min, 0 sec
+  -  `MENTION_USER`
+      - Mention(tag) user when a request is confirmed/aborted.
+      - Options: `True` (Default) or `False`
+  -  `ALLOW_PROXY`
+     - Allow admin/mods/(users with required permissions) to disconnect target user.
+     - Options: `True` (Default) or `False`
+
 ### Run bot locally
+
+#### Dependencies
+
+- [Python](https://www.python.org/) with [Pip](https://pip.pypa.io/en/stable/installation/)
+
+#### Steps
 
 1. Create a `.env` file
 2. In the `.env` file, add the Discord bot token
    ```
-   BOT_TOKEN="ADD_YOUR_OWN_DISCORD_BOT_TOKEN_HERE"
+   BOT_TOKEN="Your Bot Token Generated When Creating Bot"
    ```
 3. Install dependencies stated in `requirements.txt`
    ```
