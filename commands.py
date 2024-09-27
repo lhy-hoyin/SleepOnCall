@@ -41,10 +41,4 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     async def abort_request(interaction: discord.Interaction, member: discord.Member = None):
         await handle_abort_request(interaction, member)
 
-    if COMMERCIAL:
-        # @tree.command(name='sponsor', description='Like this bot? Sponsor me :>')
-        # async def sponsor(interaction: discord.Interaction):
-        #     #TODO
-        pass
-
     return tree

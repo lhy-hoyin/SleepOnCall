@@ -3,9 +3,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Bot settings
-COMMERCIAL = False # not used currently
 TOKEN = os.getenv('BOT_TOKEN')
+
+"""
+BOT CONFIGURATIONS
+"""
 
 """
 Maximum time which the bot shall accept.
