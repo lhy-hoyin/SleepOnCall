@@ -39,7 +39,7 @@ async def disconnect_user(user: discord.Member) -> bool:
     else:
         return False
 
-async def handle_disconnect_request(interaction: discord.Interaction, timer, target: discord.Member):
+async def handle_disconnect_request(interaction: discord.Interaction, timer: int, target: discord.Member):
     requester = interaction.user
     target = requester if target == None else target
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
@@ -84,7 +84,33 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer, tar
     await interaction.response.send_message(
         content=f'{name} will be disconnected <t:{unix_timer}:R>.\nTo cancel, use </abort:1240892252595818566>.')
 
-async def handle_check_request(interaction: discord.Integration):
+async def handle_disconnect_all_request(interaction: discord.Interaction, timer: int):
+    requester = interaction.user
+    has_permission = requester.resolved_permissions.move_members
+    name = f'<@{requester.id}>' if MENTION_USER else f'{requester.display_name}'
+
+    if not has_permission:
+        await interaction.response.send_message(
+            content=f'You do not have permission to disconnect everyone.',
+            ephemeral=True)
+        
+    # TODO: add confirmation Modal
+
+    for member in interaction.channel.members:
+        print(type(member), member)
+        # TODO: do checks piror to adding request
+        # TODO: Add a disconnect request
+
+    
+    #TODO: Indicated time to disconnect in message
+    #TODO: have a different message format where all members are tagged
+    #await interaction.response.send_message(
+    #        content=f'{name} has requested to disconnect everyone currently in the voice channel.')
+
+    #TODO: uncomment above when implemented
+    await interaction.response.send_message(content="To be implemented")
+
+async def handle_check_request(interaction: discord.Interaction):
     msg = 'You have no pending request.'
     time_left = check_request(interaction.user)
 
@@ -94,7 +120,7 @@ async def handle_check_request(interaction: discord.Integration):
     
     await interaction.response.send_message(content=msg,  delete_after=10, ephemeral=True)
 
-async def handle_abort_request(interaction: discord.Integration, target: discord.Member):
+async def handle_abort_request(interaction: discord.Interaction, target: discord.Member):
     requester = interaction.user
     target = requester if target == None else target
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'

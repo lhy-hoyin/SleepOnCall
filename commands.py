@@ -2,8 +2,13 @@ import discord
 from discord import app_commands
 
 from TimerSelector import TimerSelector
-from config import COMMERCIAL
-from logic import handle_check_request, handle_disconnect_request, handle_abort_request
+from config import ALLOW_PROXY
+from logic import (
+    handle_check_request,
+    handle_disconnect_request,
+    handle_disconnect_all_request,
+    handle_abort_request,
+)
 
 """
 Supported Commands:
@@ -12,7 +17,7 @@ Supported Commands:
  - disconnect_me
  - check
  - abort_request
- - sponsor (not implemented)
+ - dc-all
 """
 
 def tree(bot: discord.Client) -> app_commands.CommandTree:
@@ -40,5 +45,11 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     @app_commands.describe(member='abort request for member')
     async def abort_request(interaction: discord.Interaction, member: discord.Member = None):
         await handle_abort_request(interaction, member)
+    
+    if ALLOW_PROXY:
+        @tree.command(name='dc-all', description='Disconnect everyone in the current voice channel')
+        @app_commands.describe(timer='seconds until disconnected')
+        async def dc_all(interaction: discord.Interaction, timer: int = 0):
+            await handle_disconnect_all_request(interaction, timer)
 
     return tree
