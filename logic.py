@@ -93,14 +93,35 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
         await interaction.response.send_message(
             content=f'You do not have permission to disconnect everyone.',
             ephemeral=True)
+        return
         
     # TODO: add confirmation Modal
 
-    for member in interaction.channel.members:
-        print(type(member), member)
-        # TODO: do checks piror to adding request
-        # TODO: Add a disconnect request
+    vc_members = interaction.channel.members
 
+    # No one to disconnect
+    if len(vc_members) <= 0:
+        await interaction.response.send_message(
+            content=f'There is no one in voice channel.',
+            ephemeral=True)
+        return
+
+    # Requested time exceed max time limit
+    if timer > time_in_seconds(MAX_TIMER):
+        await interaction.response.send_message(
+            content=f'Request time exceeds max time limit.\nMax is {time_in_str(time_in_seconds(MAX_TIMER))}.',
+            ephemeral=True)
+        return
+
+    # Add a disconnect request for each member
+    for member in vc_members:
+        if timer <= 0:
+            await disconnect_user(member)
+        else:
+            add_request(member, timer)
+    
+    if requests_count() > 0 and not logic_loop.is_running():
+        logic_loop.start()
     
     #TODO: Indicated time to disconnect in message
     #TODO: have a different message format where all members are tagged
@@ -108,7 +129,7 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
     #        content=f'{name} has requested to disconnect everyone currently in the voice channel.')
 
     #TODO: uncomment above when implemented
-    await interaction.response.send_message(content="To be implemented")
+    await interaction.response.send_message(content="Ok")
 
 async def handle_check_request(interaction: discord.Interaction):
     msg = 'You have no pending request.'
