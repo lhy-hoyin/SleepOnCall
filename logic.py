@@ -94,9 +94,7 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
             content=f'You do not have permission to disconnect everyone.',
             ephemeral=True)
         return
-        
-    # TODO: add confirmation Modal
-
+    
     vc_members = interaction.channel.members
     unix_timer =  int(time.time()) + timer
     msg = f'{name} has requested to disconnect everyone currently in the voice channel <t:{unix_timer}:R>.\n'
@@ -114,6 +112,9 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
             content=f'Request time exceeds max time limit.\nMax is {time_in_str(time_in_seconds(MAX_TIMER))}.',
             ephemeral=True)
         return
+    
+    # Different message when disconnect now (i.e. timer <= 0)
+    msg = f'{name} has disconnected everyone in the voice channel.\n'
 
     # Add a disconnect request for each member
     for member in vc_members:
@@ -128,8 +129,6 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
     
     if requests_count() > 0 and not logic_loop.is_running():
         logic_loop.start()
-
-    # TODO: different message when disconnect now (i.e. timer <= 0)
 
     # Acknowledge request
     await interaction.response.send_message(content=msg)
