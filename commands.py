@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands
 
-from TimerSelector import TimerSelector
+from TimerSelectorModal import TimerSelectorModal
 from config import ALLOW_PROXY
 from logic import (
     handle_check_request,
@@ -35,7 +35,7 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
 
     @tree.command(name='disconnect_me', description='Set a timer, where you will be disconnect after that.')
     async def disconnect_me(interaction: discord.Interaction):
-        await interaction.response.send_modal(TimerSelector())
+        await interaction.response.send_modal(TimerSelectorModal())
 
     @tree.command(name='check', description='Check if you have any pending disconnect request')
     async def check(interaction: discord.Interaction):

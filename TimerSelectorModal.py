@@ -3,7 +3,7 @@ from logic import handle_disconnect_request
 from helper import time_in_seconds, time_in_str, check_time_bounds
 from config import MAX_TIMER
 
-class TimerSelector(discord.ui.Modal, title='Disconnect duration'):
+class TimerSelectorModal(discord.ui.Modal, title='Disconnect duration'):
     time = discord.ui.TextInput(
         label=f'Time (max {time_in_str(time_in_seconds(MAX_TIMER))})',
         placeholder = 'hh:mm:ss',
