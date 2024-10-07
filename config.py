@@ -24,6 +24,12 @@ Mention target user (user to be disconnected) when:
 MENTION_USER = True
 
 """
-Allow other users (with required permissions) to disconnect target user
+Allow other users (with required permissions) to disconnect target user.
 """
 ALLOW_PROXY = True
+
+"""
+Use unix timestamp to have Discord show a countdown-style timer to time of disconnect.
+Should disable if (hosted) server is found to be inaccurate time
+"""
+USE_UNIX_TIMESTAMP = True

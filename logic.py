@@ -2,7 +2,7 @@ import time
 import discord
 from discord.ext import tasks
 from helper import time_in_str, time_in_seconds
-from config import MAX_TIMER, MENTION_USER, ALLOW_PROXY
+from config import MAX_TIMER, MENTION_USER, ALLOW_PROXY, USE_UNIX_TIMESTAMP
 from storage import (
     add_request,
     check_request,
@@ -81,8 +81,9 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer: int
 
     # Acknowledge success of request
     unix_timer =  int(time.time()) + timer
+    countdown_msg = f'<t:{unix_timer}:R>' if USE_UNIX_TIMESTAMP else f'in {time_in_str(timer)}'
     await interaction.response.send_message(
-        content=f'{name} will be disconnected <t:{unix_timer}:R>.\nTo cancel, use </abort:1240892252595818566>.')
+        content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use </abort:1240892252595818566>.')
 
 async def handle_disconnect_all_request(interaction: discord.Interaction, timer: int):
     requester = interaction.user
@@ -97,7 +98,8 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
     
     vc_members = interaction.channel.members
     unix_timer =  int(time.time()) + timer
-    msg = f'{name} has requested to disconnect everyone currently in the voice channel <t:{unix_timer}:R>.\n'
+    countdown_msg = f'<t:{unix_timer}:R>' if USE_UNIX_TIMESTAMP else f'in {time_in_str(timer)}'
+    msg = f'{name} has requested to disconnect everyone currently in the voice channel {countdown_msg}.\n'
 
     # No one to disconnect
     if len(vc_members) <= 0:
@@ -139,7 +141,8 @@ async def handle_check_request(interaction: discord.Interaction):
 
     if time_left:
         dc_unix_time = int(time.time()) + time_left
-        msg = f'You will is disconnected <t:{dc_unix_time}:R>.'
+        countdown_msg = f'<t:{dc_unix_time}:R>' if USE_UNIX_TIMESTAMP else f'in {time_in_str(time_left)}'
+        msg = f'You will is disconnected {countdown_msg}.'
     
     await interaction.response.send_message(content=msg,  delete_after=10, ephemeral=True)
 
