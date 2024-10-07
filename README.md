@@ -16,8 +16,8 @@ The bot uses slash commands. Discord will prompt for the valid commands for the 
 
 1. Created a Discord bot on [Discord Developer Portal](https://discord.com/developers/applications)
 2. Under **Installation**, set up the *Install Link* and give the following permissions:
-    - Connect
     - Send Message
+    - Move Members
 3. Under **Bot**, generate (or reset) a *TOKEN* and keep it safe, you will need it later 
 
 ### Configure bot
