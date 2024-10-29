@@ -116,7 +116,8 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
         return
     
     # Different message when disconnect now (i.e. timer <= 0)
-    msg = f'{name} has disconnected everyone in the voice channel.\n'
+    if timer <= 0:
+        msg = f'{name} has disconnected everyone in the voice channel.\n'
 
     # Add a disconnect request for each member
     for member in vc_members:
