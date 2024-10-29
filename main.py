@@ -11,6 +11,7 @@ bot = discord.Client(intents=intents)
 async def on_ready():
     tree = commands.tree(bot)
     await tree.sync()
+    await commands.capture_commands_id(tree)
     print(f'{bot.user} is now up and running.')
 
 # Start bot

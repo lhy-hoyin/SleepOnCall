@@ -10,15 +10,7 @@ from logic import (
     handle_abort_request,
 )
 
-"""
-Supported Commands:
- - ping
- - dc
- - disconnect_me
- - check
- - abort_request
- - dc-all
-"""
+_cmds = {}
 
 def tree(bot: discord.Client) -> app_commands.CommandTree:
     tree = app_commands.CommandTree(bot)
@@ -53,3 +45,12 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
             await handle_disconnect_all_request(interaction, timer)
 
     return tree
+
+async def capture_commands_id(tree: app_commands.CommandTree) -> None:
+    global _cmds
+    captured_commands = await tree.fetch_commands()
+    for cmd in captured_commands:
+        _cmds[cmd.name] = f'</{cmd.name}:{cmd.id}>'
+
+def message_formatted(cmd_name: str) -> str:
+    return _cmds[cmd_name]

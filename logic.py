@@ -1,6 +1,8 @@
 import time
 import discord
 from discord.ext import tasks
+
+import commands
 from helper import time_in_str, time_in_seconds
 from config import MAX_TIMER, MENTION_USER, ALLOW_PROXY, USE_UNIX_TIMESTAMP
 from storage import (
@@ -83,7 +85,7 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer: int
     unix_timer =  int(time.time()) + timer
     countdown_msg = f'<t:{unix_timer}:R>' if USE_UNIX_TIMESTAMP else f'in {time_in_str(timer)}'
     await interaction.response.send_message(
-        content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use </abort:1240892252595818566>.')
+        content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use {commands.message_formatted('abort')}.')
 
 async def handle_disconnect_all_request(interaction: discord.Interaction, timer: int):
     requester = interaction.user
