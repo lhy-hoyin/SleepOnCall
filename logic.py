@@ -85,7 +85,7 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer: int
     unix_timer =  int(time.time()) + timer
     countdown_msg = f'<t:{unix_timer}:R>' if USE_UNIX_TIMESTAMP else f'in {time_in_str(timer)}'
     await interaction.response.send_message(
-        content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use {commands.message_formatted('abort')}.')
+        content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use {commands.message_formatted("abort")}.')
 
 async def handle_disconnect_all_request(interaction: discord.Interaction, timer: int):
     requester = interaction.user
@@ -128,15 +128,19 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
         else:
             add_request(member, timer)
 
-        # Mention members beinf disconnected, excluding requester
-        if MENTION_USER and member.id != requester.id:
+        # No additional interaction for requester, bot, etc
+        if member.id == requester.id or member.bot:
+            continue
+
+        # Mention members being disconnected
+        if MENTION_USER:
             msg += f'<@{member.id}>'
     
     if requests_count() > 0 and not logic_loop.is_running():
         logic_loop.start()
 
     # Acknowledge request
-    await interaction.response.send_message(content=msg)
+    await interaction.response.send_message(content=msg.strip())
 
 async def handle_check_request(interaction: discord.Interaction):
     msg = 'You have no pending request.'
