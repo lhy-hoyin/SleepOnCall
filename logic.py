@@ -13,6 +13,7 @@ from storage import (
     get_requests_copy
 )
 
+
 @tasks.loop(seconds=1)
 async def logic_loop():
     for user, timer in get_requests_copy().items():
@@ -34,12 +35,14 @@ async def logic_loop():
     if requests_count() == 0:
         logic_loop.stop()
 
+
 async def disconnect_user(user: discord.Member) -> bool:
     if user.voice:
         await user.move_to(None)
         return True
     else:
         return False
+
 
 async def handle_disconnect_request(interaction: discord.Interaction, timer: int, target: discord.Member):
     requester = interaction.user
@@ -86,6 +89,7 @@ async def handle_disconnect_request(interaction: discord.Interaction, timer: int
     countdown_msg = f'<t:{unix_timer}:R>' if USE_UNIX_TIMESTAMP else f'in {time_in_str(timer)}'
     await interaction.response.send_message(
         content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use {commands.message_formatted("abort")}.')
+
 
 async def handle_disconnect_all_request(interaction: discord.Interaction, timer: int):
     requester = interaction.user
@@ -142,6 +146,7 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
     # Acknowledge request
     await interaction.response.send_message(content=msg.strip())
 
+
 async def handle_check_request(interaction: discord.Interaction):
     msg = 'You have no pending request.'
     time_left = check_request(interaction.user)
@@ -152,6 +157,7 @@ async def handle_check_request(interaction: discord.Interaction):
         msg = f'You will is disconnected {countdown_msg}.'
     
     await interaction.response.send_message(content=msg,  delete_after=10, ephemeral=True)
+
 
 async def handle_abort_request(interaction: discord.Interaction, target: discord.Member):
     requester = interaction.user

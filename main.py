@@ -12,7 +12,8 @@ async def on_ready():
     tree = commands.tree(bot)
     await tree.sync()
     await commands.capture_commands_id(tree)
-    print(f'{bot.user} is now up and running.')
+    print(f'REPORT: In {len(bot.guilds)} guild(s).')
+    print(f'SUCCESS: {bot.user} is now up and running.')
 
 # Start bot
 if TOKEN:
