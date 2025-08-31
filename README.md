@@ -44,18 +44,34 @@ You can configure the following:
 
 - [Python](https://www.python.org/) with [Pip](https://pip.pypa.io/en/stable/installation/)
 
-#### Steps
+#### Add discord bot token
 
 1. Create a `.env` file
 2. In the `.env` file, add the Discord bot token
    ```
    BOT_TOKEN="Your Bot Token Generated When Creating Bot"
    ```
+
+#### Install project dependencies in virtual environment
+1. Create virtual envrionment
+   ```
+   python -m venv .venv
+   ```
+2. Activate virtual environment
+   ```
+   # On Windows
+   .venv\Scripts\activate
+
+   # On macOS/Linux
+   source .venv/bin/activate
+   ```
 3. Install dependencies stated in `requirements.txt`
    ```
    pip install -r requirements.txt
    ```
-4. Run `main.py`
+
+#### Running the bot
+1. Run `main.py`
    ```
    python main.py
    ```
