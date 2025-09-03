@@ -84,3 +84,24 @@ You can configure the following:
 3. Select the server to add the bot into, then click `Continue`
 4. Check all required permissions (should be checked by default), then click `Authorise`
 5. Bot is now added to server
+
+## Commands
+
+The basic commands are:
+- `/ping`: Checks the bot's status
+- `/dc [timer] [member]`: Quick disconnect
+  - `[timer]`: Seconds until disconnect - Optional (defaults to 0s)
+  - `[member]`: Target member to disconnect - Optional (defaults to yourself)
+- `/check`: Check if you are going to be disconnected
+- `/abort [member]`: Cancels any upcoming disconnects to member
+  - `[member]`: Target member - Optional (defaults to yourself)
+
+
+Commands below required bot owner to set _ALLOW_PROXY_ in configuration:
+- `/dc-all [timer]`: Disconnect everyone in the current voice channel
+  - `[timer]`: Seconds until disconnect - Optional (defaults to 0s)
+  - Requires bot owner to set _ALLOW_PROXY_
+- `/sleep 5mins`: Quick command to disconnect all members in the current voice channel in 5mins
+- `/sleep 15mins`: Quick command to disconnect all members in the current voice channel in 15mins
+- `/sleep 30mins`: Quick command to disconnect all members in the current voice channel in 30mins
+- `/sleep 1hr`: Quick command to disconnect all members in the current voice channel in 1hr

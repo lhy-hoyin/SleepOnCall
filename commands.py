@@ -21,7 +21,7 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.')
 
     @tree.command(name='dc', description='Quick disconnect')
-    @app_commands.describe(timer='seconds until disconnected')
+    @app_commands.describe(timer='seconds until disconnect')
     @app_commands.describe(member='member to disconnect')
     async def dc(interaction: discord.Interaction, timer: int = 0, member: discord.Member = None):
         await handle_disconnect_request(interaction, timer, member)
@@ -41,7 +41,7 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     
     if ALLOW_PROXY:
         @tree.command(name='dc-all', description='Disconnect everyone in the current voice channel')
-        @app_commands.describe(timer='seconds until disconnected')
+        @app_commands.describe(timer='seconds until disconnect')
         async def dc_all(interaction: discord.Interaction, timer: int = 0):
             await handle_disconnect_all_request(interaction, timer)
 
@@ -67,7 +67,7 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
 
     if ALLOW_PROXY:
         tree.add_command(SleepGroup())
-        
+
     return tree
 
 async def capture_commands_id(tree: app_commands.CommandTree) -> None:
