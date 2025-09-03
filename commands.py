@@ -10,6 +10,7 @@ from logic import (
     handle_abort_request,
 )
 
+
 _cmds = {}
 
 def tree(bot: discord.Client) -> app_commands.CommandTree:
@@ -44,6 +45,29 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         async def dc_all(interaction: discord.Interaction, timer: int = 0):
             await handle_disconnect_all_request(interaction, timer)
 
+    class SleepGroup(app_commands.Group):
+        def __init__(self):
+            super().__init__(name='sleep')
+        
+        @app_commands.command(name='5mins', description='Quick command to disconnect all in 5 mins')
+        async def sleep_in_5mins(self, interaction: discord.Interaction):
+            await handle_disconnect_all_request(interaction, 60*5)
+
+        @app_commands.command(name='15mins', description='Quick command to disconnect all in 15 mins')
+        async def sleep_in_15mins(self, interaction: discord.Interaction):
+            await handle_disconnect_all_request(interaction, 60*15)
+        
+        @app_commands.command(name='30mins', description='Quick command to disconnect all in 30 mins')
+        async def sleep_in_30mins(self, interaction: discord.Interaction):
+            await handle_disconnect_all_request(interaction, 60*30)
+
+        @app_commands.command(name='1hr', description='Quick command to disconnect all in 1hr')
+        async def sleep_in_1hr(self, interaction: discord.Interaction):
+            await handle_disconnect_all_request(interaction, 60*60)
+
+    if ALLOW_PROXY:
+        tree.add_command(SleepGroup())
+        
     return tree
 
 async def capture_commands_id(tree: app_commands.CommandTree) -> None:
