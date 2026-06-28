@@ -44,9 +44,13 @@ async def disconnect_user(user: discord.Member) -> bool:
         return False
 
 
-async def handle_disconnect_request(interaction: discord.Interaction, timer: int, target: discord.Member):
+async def handle_disconnect_request(
+        interaction: discord.Interaction,
+        timer: int,
+        target: discord.Member | None
+):
     requester = interaction.user
-    target = requester if target == None else target
+    target = requester if target is None else target
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
 
     # Check if requester has permission to disconnect others
@@ -159,9 +163,12 @@ async def handle_check_request(interaction: discord.Interaction):
     await interaction.response.send_message(content=msg,  delete_after=10, ephemeral=True)
 
 
-async def handle_abort_request(interaction: discord.Interaction, target: discord.Member):
+async def handle_abort_request(
+        interaction: discord.Interaction,
+        target: discord.Member | None
+):
     requester = interaction.user
-    target = requester if target == None else target
+    target = requester if target is None else target
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
 
     # Check if requester has permission to disconnect others

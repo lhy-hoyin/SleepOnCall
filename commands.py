@@ -23,7 +23,11 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     @tree.command(name='dc', description='Quick disconnect')
     @app_commands.describe(timer='seconds until disconnect')
     @app_commands.describe(member='member to disconnect')
-    async def dc(interaction: discord.Interaction, timer: int = 0, member: discord.Member = None):
+    async def dc(
+        interaction: discord.Interaction,
+        timer: int = 0,
+        member: discord.Member | None = None
+    ):
         await handle_disconnect_request(interaction, timer, member)
 
     @tree.command(name='disconnect_me', description='Set a timer, where you will be disconnect after that.')
@@ -36,7 +40,10 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
 
     @tree.command(name='abort', description='Stop a previously made disconnect request, if any')
     @app_commands.describe(member='abort request for member')
-    async def abort_request(interaction: discord.Interaction, member: discord.Member = None):
+    async def abort_request(
+        interaction: discord.Interaction,
+        member: discord.Member | None = None
+    ):
         await handle_abort_request(interaction, member)
     
     if ALLOW_PROXY:
