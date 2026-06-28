@@ -1,0 +1,9 @@
+services:
+  discord-bot:
+    build: .
+    container_name: sleep-on-call
+    restart: unless-stopped
+    env_file:
+      - .env
+
+# Note: You must create a .env file in the same directory with your token
