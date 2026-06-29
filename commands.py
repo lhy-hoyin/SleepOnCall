@@ -2,7 +2,8 @@ import discord
 from discord import app_commands
 
 from TimerSelectorModal import TimerSelectorModal
-from config import ALLOW_PROXY
+from config import ALLOW_PROXY, MAX_TIMER
+from helper import time_in_seconds
 from logic import (
     handle_check_request,
     handle_disconnect_request,
@@ -21,8 +22,7 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.')
 
     @tree.command(name='dc', description='Quick disconnect')
-    @app_commands.describe(timer='seconds until disconnect')
-    @app_commands.describe(member='member to disconnect')
+    @app_commands.describe(timer='seconds until disconnect', member='member to disconnect')
     async def dc(
         interaction: discord.Interaction,
         timer: int = 0,
@@ -71,6 +71,10 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         @app_commands.command(name='1hr', description='Quick command to disconnect all in 1hr')
         async def sleep_in_1hr(self, interaction: discord.Interaction):
             await handle_disconnect_all_request(interaction, 60*60)
+
+        @app_commands.command(name='max', description='Quick command to disconnect all in the maximum allowed time')
+        async def sleep_in_max_timer(self, interaction: discord.Interaction):
+            await handle_disconnect_all_request(interaction, time_in_seconds(MAX_TIMER))
 
     if ALLOW_PROXY:
         tree.add_command(SleepGroup())
