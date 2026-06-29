@@ -79,6 +79,88 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
     if ALLOW_PROXY:
         tree.add_command(SleepGroup())
 
+    @tree.command(name='help', description='Display help message')
+    @app_commands.describe(command='The command to get help for')
+    async def help(interaction: discord.Interaction, command: str | None = None):
+        help_message = (
+            "Here are the available commands:"
+            f"\n{fmt_cmd('ping')} - Check for bot's status"
+            f"\n{fmt_cmd('dc')} - Quick disconnect"
+            f"\n{fmt_cmd('disconnect_me')} - Set a timer to disconnect yourself"
+            f"\n{fmt_cmd('check')} - Check if you have any pending disconnect requests"
+            f"\n{fmt_cmd('abort')} - Stop a previously made disconnect request"
+        )
+
+        if ALLOW_PROXY:
+            help_message += (
+                f"\n{fmt_cmd('dc-all')} - Disconnect everyone in the current voice channel"
+                f"\n{fmt_cmd('sleep')} - Quick command to disconnect all in xx duration"
+            )
+
+        command = (command or "").lstrip("/").lower()
+        match command:
+            case "": # Empty str
+                pass
+            case 'ping':
+                help_message = (
+                    f"{fmt_cmd('ping')} - Check if bot is online and responding."
+                    "\nA response means that the bot is online."
+                    "\nIf the commands fails to send or get a response, it means that the bot is offline."
+                )
+            case 'dc':
+                help_message = (
+                    f"{fmt_cmd('dc')} - Quick disconnect command."
+                    "\n"
+                    "\nIf no `timer` is specified, it will disconnect immediately."
+                    "\nYou can specify the `timer` duration in seconds, subject to the maximum allowed time."
+                )
+                if ALLOW_PROXY:
+                    help_message += (
+                        "\n"
+                        "\nYou can also specify a `member` to disconnect them instead of yourself."
+                        "\nYou must have the permissions and the member must be in the same voice channel as you."
+                        "\nRefer to the member using `@`."
+                    )
+            case 'dc-all':
+                help_message = (
+                    f"{fmt_cmd('dc-all')} - Disconnect all members in the voice channel."
+                    "\nYou must have the permissions and the bot must be configured to allow it."
+                    "\n"
+                    "\nIf no `timer` is specified, it will disconnect immediately."
+                    "\nYou can specify the `timer` duration in seconds, subject to the maximum allowed time."
+                )
+            case 'disconnect_me':
+                help_message = (
+                    f"{fmt_cmd('disconnect_me')} - Opens a popup where you can set the duration."
+                    "\nYou can specify the duration in hours, minutes, and seconds (HH:mm:ss), "
+                    "subjected to the maximum allowed time."
+                )
+            case 'check':
+                help_message = (
+                    f"{fmt_cmd('check')} - Check if you have any pending disconnect requests."
+                    "\nIf you have a pending request, it will show the remaining time until the disconnect."
+                    "\nOnly you can see the response."
+                )
+            case 'abort':
+
+                help_message = (
+                    f"{fmt_cmd('abort')} - Stop a previously made disconnect request."
+                    "\nYou can only abort disconnect requests on yourself."
+                )
+            case 'sleep':
+                help_message = (
+                    f"{fmt_cmd('sleep')} - Quick command to disconnect everyone in xx duration."
+                    "\nAvailable options are: `5mins`, `15mins`, `30mins`, `1hr`, `max`."
+                )
+
+            case _:
+                help_message = (
+                    f"Command '{command}' not found. "
+                    f"Use {fmt_cmd('help')} to see the list of available commands."
+                )
+
+        await interaction.response.send_message(help_message)
+
     return tree
 
 async def capture_commands_id(tree: app_commands.CommandTree) -> None:
@@ -87,5 +169,6 @@ async def capture_commands_id(tree: app_commands.CommandTree) -> None:
     for cmd in captured_commands:
         _cmds[cmd.name] = f'</{cmd.name}:{cmd.id}>'
 
-def message_formatted(cmd_name: str) -> str:
+# Format command
+def fmt_cmd(cmd_name: str) -> str:
     return _cmds[cmd_name]
