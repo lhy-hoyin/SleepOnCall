@@ -54,14 +54,14 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
 
     class SleepGroup(app_commands.Group):
         def __init__(self):
-            super().__init__(name='sleep')
+            super().__init__(name='sleep-all')
         
         @app_commands.command(name='5mins', description='Quick command to disconnect all in 5 mins')
-        async def sleep_in_5mins(self, interaction: discord.Interaction):
+        async def sleep_all_in_5mins(self, interaction: discord.Interaction):
             await handle_disconnect_all_request(interaction, 60*5)
 
         @app_commands.command(name='15mins', description='Quick command to disconnect all in 15 mins')
-        async def sleep_in_15mins(self, interaction: discord.Interaction):
+        async def sleep_all_in_15mins(self, interaction: discord.Interaction):
             await handle_disconnect_all_request(interaction, 60*15)
         
         @app_commands.command(name='30mins', description='Quick command to disconnect all in 30 mins')
@@ -69,11 +69,11 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
             await handle_disconnect_all_request(interaction, 60*30)
 
         @app_commands.command(name='1hr', description='Quick command to disconnect all in 1hr')
-        async def sleep_in_1hr(self, interaction: discord.Interaction):
+        async def sleep_all_in_1hr(self, interaction: discord.Interaction):
             await handle_disconnect_all_request(interaction, 60*60)
 
         @app_commands.command(name='max', description='Quick command to disconnect all in the maximum allowed time')
-        async def sleep_in_max_timer(self, interaction: discord.Interaction):
+        async def sleep_all_in_max_timer(self, interaction: discord.Interaction):
             await handle_disconnect_all_request(interaction, time_in_seconds(MAX_TIMER))
 
     if ALLOW_PROXY:
@@ -94,7 +94,7 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         if ALLOW_PROXY:
             help_message += (
                 f"\n{fmt_cmd('dc-all')} - Disconnect everyone in the current voice channel"
-                f"\n{fmt_cmd('sleep')} - Quick command to disconnect all in xx duration"
+                f"\n`/sleep-all xx` - Quick command to disconnect all in xx duration"
             )
 
         command = (command or "").lstrip("/").lower()
@@ -147,9 +147,9 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
                     f"{fmt_cmd('abort')} - Stop a previously made disconnect request."
                     "\nYou can only abort disconnect requests on yourself."
                 )
-            case 'sleep':
+            case 'sleep-all':
                 help_message = (
-                    f"{fmt_cmd('sleep')} - Quick command to disconnect everyone in xx duration."
+                    f"`/sleep-all xx` - Quick command to disconnect everyone in xx duration."
                     "\nAvailable options are: `5mins`, `15mins`, `30mins`, `1hr`, `max`."
                 )
 
@@ -171,4 +171,7 @@ async def capture_commands_id(tree: app_commands.CommandTree) -> None:
 
 # Format command
 def fmt_cmd(cmd_name: str) -> str:
+    if cmd_name not in _cmds:
+        print(f"WARN: Command '{cmd_name}' not found in captured commands. Please check that command exists.")
+        return f'`/{cmd_name}`'
     return _cmds[cmd_name]
