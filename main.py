@@ -1,5 +1,5 @@
 import discord
-import commands
+import bot_commands
 from config import TOKEN
 
 # Initialise bot
@@ -9,11 +9,10 @@ bot = discord.Client(intents=intents)
 
 @bot.event
 async def on_ready():
-    tree = commands.tree(bot)
+    tree = bot_commands.tree(bot)
     await tree.sync()
-    await commands.capture_commands_id(tree)
-    print(f'REPORT: In {len(bot.guilds)} guild(s).')
-    print(f'SUCCESS: {bot.user} is now up and running.')
+    await bot_commands.capture_commands_id(tree)
+    print(f'SUCCESS: {bot.user} is now up and running in {len(bot.guilds)} guild(s).')
 
 # Start bot
 if TOKEN:

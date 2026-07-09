@@ -2,7 +2,7 @@ import time
 import discord
 from discord.ext import tasks
 
-import commands
+import bot_commands
 from helper import time_in_str, time_in_seconds
 from config import MAX_TIMER, MENTION_USER, ALLOW_PROXY, USE_UNIX_TIMESTAMP
 from storage import (
