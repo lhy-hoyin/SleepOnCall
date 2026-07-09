@@ -7,6 +7,7 @@ from helper import time_in_str, time_in_seconds
 from config import MAX_TIMER, MENTION_USER, ALLOW_PROXY, USE_UNIX_TIMESTAMP
 from storage import (
     add_request,
+    update_request,
     check_request,
     remove_request,
     requests_count,
@@ -16,7 +17,9 @@ from storage import (
 
 @tasks.loop(seconds=1)
 async def logic_loop():
-    for user, timer in get_requests_copy().items():
+    for user, request in get_requests_copy().items():
+        timer = request['timer']
+        
         # User has left vc on their own
         if not user.voice:
             remove_request(user)
@@ -24,12 +27,16 @@ async def logic_loop():
         
         # Timer has ended
         if timer <= 0:
+            message, link = request.get('message'), request.get('link')
+            if message and link:
+                message = f'<@{user.id}>, {message}' if MENTION_USER else message
+                await link.send(message)
             await disconnect_user(user)
             remove_request(user)
             continue
         
         # Update with a reduced timer
-        add_request(user, timer - 1)
+        update_request(user, timer - 1)
     
     # Stop logic loop if no more pending requests
     if requests_count() == 0:
@@ -93,7 +100,13 @@ async def handle_disconnect_request(
         return
 
     # Add to requests
-    add_request(target, timer)
+    if (self_request or has_permission) and message:
+        channel = await interaction.client.fetch_channel(interaction.channel_id)
+        add_request(target, timer, message, channel)
+    else:
+        add_request(target, timer)
+    
+    # Start logic loop if not already running
     if not logic_loop.is_running():
         logic_loop.start()
 

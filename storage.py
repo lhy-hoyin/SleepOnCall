@@ -1,15 +1,32 @@
 import discord
-from typing import TypedDict
+from typing import TypedDict, NotRequired
 
-RequestDict = TypedDict('Request', {'user': discord.Member, 'timer': int})
-requests = RequestDict()
+class Request(TypedDict):
+    user: discord.Member
+    timer: int
+    message: NotRequired[str]
+    channel: NotRequired[discord.abc.GuildChannel | discord.Thread]
 
-def add_request(user: discord.Member, timer: int) -> None:
-    requests[user] = timer
+requests: dict[discord.Member, Request] = {}
+
+def add_request(
+    user: discord.Member,
+    timer: int,
+    message: str | None = None,
+    channel: discord.abc.GuildChannel | discord.Thread | None = None
+) -> None:
+    requests[user] = Request(user=user, timer=timer)
+    if message and channel:
+        requests[user]['message'] = message
+        requests[user]['channel'] = channel
+
+def update_request(user: discord.Member, timer: int) -> None:
+    if user in requests:
+        requests[user]['timer'] = timer
 
 def check_request(user: discord.Member) -> int | None:
     if user in requests:
-        return requests[user]
+        return requests[user]['timer']
 
 def remove_request(user: discord.Member) -> bool:
     if user in requests:
