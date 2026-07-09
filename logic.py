@@ -47,7 +47,8 @@ async def disconnect_user(user: discord.Member) -> bool:
 async def handle_disconnect_request(
         interaction: discord.Interaction,
         timer: int,
-        target: discord.Member | None
+        target: discord.Member | None,
+        message: str | None = None
 ):
     # Check if the command is used in a server
     if not isinstance(interaction.user, discord.Member):
@@ -85,7 +86,9 @@ async def handle_disconnect_request(
     
     # Requested time is "over", disconnect now
     if timer <= 0:
-        await interaction.response.send_message(content=f'Disconnecting {name} ...', silent=True)
+        await interaction.response.send_message(
+            content=f'Disconnecting {name} ...{"\n> " + message if message else ""}',
+            silent=True)
         await disconnect_user(target)
         return
 

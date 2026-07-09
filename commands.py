@@ -22,13 +22,17 @@ def tree(bot: discord.Client) -> app_commands.CommandTree:
         await interaction.response.send_message(content=f'Hi! I\'m {bot.status}.')
 
     @tree.command(name='dc', description='Quick disconnect')
-    @app_commands.describe(timer='seconds until disconnect', member='member to disconnect')
+    @app_commands.describe(
+        timer='seconds until disconnect',
+        member='member to disconnect',
+        message='message to send upon disconnect')
     async def dc(
         interaction: discord.Interaction,
         timer: int = 0,
-        member: discord.Member | None = None
+        member: discord.Member | None = None,
+        message: str | None = None
     ):
-        await handle_disconnect_request(interaction, timer, member)
+        await handle_disconnect_request(interaction, timer, member, message)
 
     @tree.command(name='disconnect_me', description='Set a timer, where you will be disconnect after that.')
     async def disconnect_me(interaction: discord.Interaction):
