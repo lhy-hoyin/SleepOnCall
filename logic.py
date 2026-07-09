@@ -49,6 +49,12 @@ async def handle_disconnect_request(
         timer: int,
         target: discord.Member | None
 ):
+    # Check if the command is used in a server
+    if not isinstance(interaction.user, discord.Member):
+        await interaction.response.send_message(
+        content=f'You do not have permission to use this command.')
+        return
+
     requester = interaction.user
     target = requester if target is None else target
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
@@ -152,8 +158,14 @@ async def handle_disconnect_all_request(interaction: discord.Interaction, timer:
 
 
 async def handle_check_request(interaction: discord.Interaction):
-    msg = 'You have no pending request.'
+    # Check if the command is used in a server
+    if not isinstance(interaction.user, discord.Member):
+        await interaction.response.send_message(
+        content=f'You do not have permission to use this command.')
+        return
+    
     time_left = check_request(interaction.user)
+    msg = 'You have no pending request.'
 
     if time_left:
         dc_unix_time = int(time.time()) + time_left
@@ -167,6 +179,12 @@ async def handle_abort_request(
         interaction: discord.Interaction,
         target: discord.Member | None
 ):
+    # Check if the command is used in a server
+    if not isinstance(interaction.user, discord.Member):
+        await interaction.response.send_message(
+        content=f'You do not have permission to use this command.')
+        return
+    
     requester = interaction.user
     target = requester if target is None else target
     name = f'<@{target.id}>' if MENTION_USER else f'{target.display_name}'
