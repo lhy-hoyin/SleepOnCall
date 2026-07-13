@@ -114,7 +114,7 @@ async def handle_disconnect_request(
     unix_timer =  int(time.time()) + timer
     countdown_msg = f'<t:{unix_timer}:R>' if USE_UNIX_TIMESTAMP else f'in {time_in_str(timer)}'
     await interaction.response.send_message(
-        content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use {commands.fmt_cmd("abort")}.')
+        content=f'{name} will be disconnected {countdown_msg}.\nTo cancel, use {bot_commands.fmt_cmd("abort")}.')
 
 
 async def handle_disconnect_all_request(interaction: discord.Interaction, timer: int):
